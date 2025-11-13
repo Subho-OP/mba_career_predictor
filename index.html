@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBA Career Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f7f9; 
+        }
+        .card { 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); 
+        }
+        .input-group label { 
+            font-weight: 600; 
+            color: #334155; 
+        }
+        .input-group select, .input-group input[type="number"] {
+            border-color: #cbd5e1;
+            transition: border-color 0.2s;
+        }
+        .input-group select:focus, .input-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        /* Style for the responsive slider container */
+        .responsive-slider-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .responsive-slider-item:last-child {
+            border-bottom: none;
+        }
+        .gemini-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .gemini-output {
+            white-space: pre-wrap;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div id="app" class="max-w-6xl mx-auto">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight">MBA Career Path Predictor</h1>
+            <p class="text-lg text-gray-500 mt-2">Input your profile details to predict your most likely career sector post-MBA.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2">
+                <div class="card bg-white p-6 sm:p-8 rounded-xl border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-700 mb-6">Your Profile Data</h2>
+                    
+                    <form id="predictionForm" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                        
+                        <div class="input-group">
+                            <label for="education" class="block mb-2 text-sm">Highest Level of Education</label>
+                            <select id="education" name="Whatisyourhighestlevelofeducation" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="Bachelors Degree or Equivalent">Bachelor's Degree or Equivalent</option>
+                                <option value="Masters Degree or Equivalent">Master's Degree or Equivalent</option>
+                                <option value="Doctoral Degree or Equivalent">Doctoral Degree or Equivalent</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="stream" class="block mb-2 text-sm">Undergrad Stream</label>
+                            <select id="stream" name="Whichfieldorstreamwereyoustudyingin" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="Engineering">Engineering</option>
+                                <option value="Commerce">Commerce</option>
+                                <option value="Business & Management">Business & Management</option>
+                                <option value="Arts">Arts</option>
+                                <option value="Science">Science</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="enjoyment" class="block mb-2 text-sm">Enjoyment of Primary Field (1-5)</label>
+                            <input type="number" id="enjoyment" name="OnaScaleof1to5howmuchdidyouenjoyyourprimaryfieldofstudy" min="1" max="5" value="3" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block mb-2 text-sm">Enjoy Working in Teams?</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center"><input type="radio" name="Doyoulikeworkinginteams " value="Yes" checked class="text-blue-600 focus:ring-blue-500 mr-2"> Yes</label>
+                                <label class="flex items-center"><input type="radio" name="Doyoulikeworkinginteams " value="No" class="text-blue-600 focus:ring-blue-500 mr-2"> No</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="digitalComfort" class="block mb-2 text-sm">Digital Tools Comfort (1-5)</label>
+                            <input type="number" id="digitalComfort" name="Howcomfortableareyouwithusingdigitaltoolsandtechnology" min="1" max="5" value="4" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="confidence" class="block mb-2 text-sm">Career Goal Confidence (1-5)</label>
+                            <input type="number" id="confidence" name="Howconfidentareyouinyourabilitytoachieveyourcareergoals" min="1" max="5" value="4" class="w-full p-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="input-group col-span-full">
+                            <label class="block mb-2 text-sm">Preferred Work Environment</label>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center"><input type="radio" name="Whatisyourmostpreferredworkenvironment" value="Hybrid" checked class="text-blue-600 focus:ring-blue-500 mr-2"> Hybrid</label>
+                                <label class="flex items-center"><input type="radio" name="Whatisyourmostpreferredworkenvironment" value="Structured environment" class="text-blue-600 focus:ring-blue-500 mr-2"> Structured</label>
+                                <label class="flex items-center"><input type="radio" name="Whatisyourmostpreferredworkenvironment" value="Remote" class="text-blue-600 focus:ring-blue-500 mr-2"> Remote</label>
+                                <label class="flex items-center"><input type="radio" name="Whatisyourmostpreferredworkenvironment" value="Flexible hours" class="text-blue-600 focus:ring-blue-500 mr-2"> Flexible</label>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group col-span-full">
+                            <label class="block mb-2 text-sm">Top Skills (Select up to 3)</label>
+                            <div id="skills-checkboxes" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                </div>
+                        </div>
+
+                        <div class="input-group col-span-full">
+                            <label class="block mb-4 text-sm font-semibold">Rate the Importance of the following Factors (1-5)</label>
+                            <div id="importance-factors" class="space-y-1">
+                                </div>
+                        </div>
+
+                        <div class="col-span-full pt-4">
+                            <button type="button" onclick="predictCareer()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                                Predict My Career Sector
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div id="resultsPanel" class="card bg-blue-50 border-2 border-blue-200 p-6 sm:p-8 rounded-xl sticky top-8 transition-all duration-300">
+                    <h2 class="text-xl font-bold text-blue-800 mb-4">Predicted Career Sector</h2>
+                    <div id="predictionResult" class="text-center">
+                        <p class="text-gray-600 italic">Submit your profile to see the prediction.</p>
+                        </div>
+
+                    <div id="geminiFeatures" class="hidden mt-6 pt-4 border-t border-blue-200 space-y-3">
+                        <p class="text-sm font-bold text-gray-700">AI-Powered Career Tools</p>
+                        <button id="nextStepsBtn" onclick="generateNextSteps()" class="gemini-btn w-full bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50">
+                            <span id="nextStepsLoader" class="hidden mr-2 spinner"></span>
+                            <span id="nextStepsText">✨ Generate Next Steps</span>
+                        </button>
+                        <button id="pitchBtn" onclick="draftPitch()" class="gemini-btn w-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 disabled:opacity-50 border-indigo-300">
+                            <span id="pitchLoader" class="hidden mr-2 spinner border-t-indigo-700"></span>
+                            <span id="pitchText">🗣️ Draft Personal Pitch</span>
+                        </button>
+                    </div>
+
+                    <div id="geminiOutput" class="hidden mt-6 pt-4 border-t border-blue-200">
+                        <h3 class="text-md font-bold text-gray-700 mb-2">AI Output:</h3>
+                        <div id="llmContent" class="bg-white p-4 rounded-lg border text-sm text-gray-800 gemini-output">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="messageBox" class="col-span-full hidden mt-4 p-4 rounded-lg text-sm transition-opacity duration-300" role="alert"></div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Gemini API Configuration ---
+        // NOTE: Please replace the placeholder key below with your actual key if running outside the platform environment.
+        const apiKey = "AIzaSyDngxl0BHhdORp4rs_y95H4ZI33l8bLvkg"; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        // State to store the last successful profile and prediction
+        let lastPredictedSector = null;
+        let lastUserProfile = null;
+
+        // --- Data Definitions (Mimicking ML Setup) ---
+        const ALL_SKILLS = [
+            'Problem Solving', 'Data Analysis', 'Programming', 'Project Management', 
+            'Leadership', 'Teamwork', 'Communication', 'Creativity', 'Financial Modeling'
+        ];
+
+        const IMPORTANCE_FACTORS = [
+            "Salary",
+            "Work-life balance",
+            "Career growth opportunities",
+            "Impact/Meaningfulness of work",
+            "Company culture",
+            "Job Security"
+        ];
+        
+        const SECTORS = {
+            '1_Tech_Digital': { name: 'Tech & Digital', color: 'text-green-600', bg: 'bg-green-100' },
+            '2_Finance_Consulting': { name: 'Finance & Consulting', color: 'text-indigo-600', bg: 'bg-indigo-100' },
+            '3_Operations_Manufacturing': { name: 'Operations & Manufacturing', color: 'text-red-600', bg: 'bg-red-100' },
+            '4_Public_Social': { name: 'Public & Social Sector', color: 'text-yellow-600', bg: 'bg-yellow-100' }
+        };
+
+        // --- Helper Functions ---
+        
+        function showMessage(message, type = 'error') {
+            const box = document.getElementById('messageBox');
+            box.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+            
+            if (type === 'error') {
+                box.classList.add('bg-red-100', 'text-red-800');
+            } else {
+                box.classList.add('bg-green-100', 'text-green-800');
+            }
+            box.innerHTML = message;
+        }
+
+        function toggleButtonLoading(buttonId, isLoading, originalText, loaderId) {
+            const button = document.getElementById(buttonId);
+            const textSpan = document.getElementById(originalText);
+            const loader = document.getElementById(loaderId);
+
+            if (isLoading) {
+                button.disabled = true;
+                textSpan.classList.add('hidden');
+                loader.classList.remove('hidden');
+            } else {
+                button.disabled = false;
+                textSpan.classList.remove('hidden');
+                loader.classList.add('hidden');
+            }
+        }
+
+        function renderFormElements() {
+            // Render Skills Checkboxes
+            const skillsContainer = document.getElementById('skills-checkboxes');
+            skillsContainer.innerHTML = ALL_SKILLS.map(skill => `
+                <label class="flex items-center text-sm">
+                    <input type="checkbox" name="skills" value="${skill}" class="text-blue-600 focus:ring-blue-500 rounded mr-2" onchange="limitSkills(event)">
+                    ${skill}
+                </label>
+            `).join('');
+
+            // Render Importance Factors (Responsive Layout)
+            const factorsContainer = document.getElementById('importance-factors');
+            factorsContainer.innerHTML = IMPORTANCE_FACTORS.map(factor => {
+                const sliderName = `Rate the importance of the following factors in your career choice: [${factor}]`;
+                const initialValue = 3; 
+                
+                return `
+                    <div class="responsive-slider-item flex flex-col sm:flex-row sm:items-center justify-between">
+                        <label class="text-sm text-gray-700 font-medium mb-1 sm:mb-0 w-full sm:w-2/5">${factor}</label>
+                        <div class="flex items-center w-full sm:w-3/5">
+                            <input type="range" min="1" max="5" value="${initialValue}" class="range-slider w-full"
+                                name="${sliderName}">
+                            <span class="ml-3 text-sm text-gray-500 w-10 text-right">(${initialValue})</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add event listeners to update slider value display
+            document.querySelectorAll('#importance-factors input[type="range"]').forEach(slider => {
+                slider.addEventListener('input', (e) => {
+                    const valueSpan = e.target.closest('.responsive-slider-item').querySelector('span:last-child');
+                    if (valueSpan) valueSpan.textContent = `(${e.target.value})`;
+                });
+            });
+        }
+        
+        function limitSkills(event) {
+            const checkboxes = document.querySelectorAll('input[name="skills"]:checked');
+            if (checkboxes.length > 3) {
+                // Prevent checking the 4th box
+                event.target.checked = false; 
+                showMessage('Please select a maximum of three top skills.', 'error');
+            } else {
+                document.getElementById('messageBox').classList.add('hidden');
+            }
+        }
+
+        // --- Simulated Prediction Logic (from previous step) ---
+
+        function getProfileScore(profile) {
+            let score = 0;
+            
+            // 1. Education/Stream (Favoring Tech/Finance)
+            if (profile['Whichfieldorstreamwereyoustudyingin'] === 'Engineering') score += 2;
+            if (profile['Whichfieldorstreamwereyoustudyingin'] === 'Business & Management') score += 1;
+            
+            // 2. Enjoyment & Confidence (General predictor of high-growth)
+            score += (profile['OnaScaleof1to5howmuchdidyouenjoyyourprimaryfieldofstudy'] || 0) * 0.5;
+            score += (profile['Howconfidentareyouinyourabilitytoachieveyourcareergoals'] || 0) * 0.5;
+
+            // 3. Digital Comfort (Predicts Tech/Finance)
+            score += (profile['Howcomfortableareyouwithusingdigitaltoolsandtechnology'] || 0) * 1.5;
+
+            // 4. Values (Most important for differentiation)
+            const salaryImportance = profile['Rate the importance of the following factors in your career choice: [Salary]'];
+            const growthImportance = profile['Rate the importance of the following factors in your career choice: [Career growth opportunities]'];
+            const wlbImportance = profile['Rate the importance of the following factors in your career choice: [Work-life balance]'];
+            const impactImportance = profile['Rate the importance of the following factors in your career choice: [Impact/Meaningfulness of work]'];
+
+            if (salaryImportance >= 4 && growthImportance >= 4) { // High Salary/Growth profile
+                score += 3; 
+            }
+            if (wlbImportance >= 4 || impactImportance >= 4) { // High Work-Life Balance/Impact profile
+                score -= 2; 
+            }
+            
+            // 5. Skills (Specific)
+            const skills = profile['skills'] || [];
+            if (skills.includes('Programming') || skills.includes('Data Analysis')) score += 3;
+            if (skills.includes('Leadership') || skills.includes('Financial Modeling')) score += 2;
+
+            return score;
+        }
+
+        function getProfileData() {
+            const form = document.getElementById('predictionForm');
+            const data = new FormData(form);
+            const profile = {};
+            
+            for (const [key, value] of data.entries()) {
+                if (key.startsWith('Rate the importance of the following factors') || 
+                    key === 'OnaScaleof1to5howmuchdidyouenjoyyourprimaryfieldofstudy' || 
+                    key === 'Howcomfortableareyouwithusingdigitaltoolsandtechnology' || 
+                    key === 'Howconfidentareyouinyourabilitytoachieveyourcareergoals') 
+                {
+                     // Convert to number
+                     profile[key] = parseInt(value) || 0; 
+                } else if (key === 'skills') {
+                    // Skip temporary handling of multi-value field
+                } else {
+                    profile[key] = value;
+                }
+            }
+
+            // Extract skills (checkboxes are multi-value)
+            const selectedSkills = Array.from(form.querySelectorAll('input[name="skills"]:checked')).map(cb => cb.value);
+            profile['skills'] = selectedSkills;
+            
+            return profile;
+        }
+
+        function predictCareer() {
+            const profile = getProfileData();
+
+            // Store profile globally for Gemini calls
+            lastUserProfile = profile; 
+            
+            // 1. Calculate weighted score based on profile features
+            const rawScore = getProfileScore(profile);
+
+            // 2. Map score to one of the 4 sectors (Simulated ML Classification)
+            let predictedSectorKey;
+            let confidence = Math.max(75, Math.min(95, 70 + Math.floor(Math.random() * 25))); // Mock confidence
+
+            if (rawScore >= 12) {
+                predictedSectorKey = '2_Finance_Consulting';
+            } else if (rawScore >= 9) {
+                predictedSectorKey = '1_Tech_Digital';
+            } else if (rawScore >= 5) {
+                predictedSectorKey = '3_Operations_Manufacturing';
+            } else {
+                predictedSectorKey = '4_Public_Social';
+            }
+            
+            // Store prediction globally for Gemini calls
+            lastPredictedSector = predictedSectorKey;
+
+            // 3. Get final sector details
+            const sector = SECTORS[predictedSectorKey];
+            
+            // 4. Display Results
+            const resultPanel = document.getElementById('predictionResult');
+            resultPanel.innerHTML = `
+                <div class="mb-4">
+                    <p class="text-sm font-semibold text-gray-700">Your Predicted Career Sector:</p>
+                    <p class="text-3xl font-extrabold ${sector.color} mt-1">${sector.name}</p>
+                </div>
+                <div class="${sector.bg} p-4 rounded-lg">
+                    <p class="text-sm font-semibold text-gray-700 mb-1">Model Confidence:</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="h-2.5 rounded-full" style="width: ${confidence}%; background-color: ${sector.color.replace('text-', '').replace('-600', '-500')}"></div>
+                    </div>
+                    <p class="text-xs ${sector.color} mt-2 font-bold">${confidence}% Match</p>
+                </div>
+            `;
+            document.getElementById('resultsPanel').classList.add('shadow-xl', 'ring-4', 'ring-blue-100');
+            
+            // Show Gemini features
+            document.getElementById('geminiFeatures').classList.remove('hidden');
+            document.getElementById('geminiOutput').classList.add('hidden'); // Hide previous LLM output
+            
+            showMessage('Prediction complete! Use the AI tools below for personalized advice.', 'success');
+        }
+
+        // --- Gemini API Functions ---
+        
+        async function callGeminiAPI(systemPrompt, userQuery) {
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            // Simple Exponential Backoff for retries
+            for (let i = 0; i < 3; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && i < 2) {
+                            // Too Many Requests, retry with backoff
+                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                            continue;
+                        }
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (text) {
+                        return text;
+                    } else {
+                        throw new Error("Received empty or malformed response from Gemini.");
+                    }
+                } catch (error) {
+                    console.error("Gemini API Error:", error);
+                    if (i === 2) throw new Error("Failed to get response after multiple retries.");
+                    // Log is suppressed by instructions, but console.error is allowed.
+                }
+            }
+        }
+
+        async function generateNextSteps() {
+            if (!lastPredictedSector || !lastUserProfile) {
+                showMessage("Please run the career prediction first.", 'error');
+                return;
+            }
+            
+            const sectorName = SECTORS[lastPredictedSector].name;
+            const btnId = 'nextStepsBtn';
+            toggleButtonLoading(btnId, true, 'nextStepsText', 'nextStepsLoader');
+            document.getElementById('llmContent').innerHTML = "<div class='flex items-center space-x-2 text-indigo-700'><span class='spinner border-t-indigo-700'></span><span>Thinking like a Career Coach...</span></div>";
+            document.getElementById('geminiOutput').classList.remove('hidden');
+
+            const keyValues = IMPORTANCE_FACTORS.map(factor => {
+                const key = `Rate the importance of the following factors in your career choice: [${factor}]`;
+                return `${factor}: ${lastUserProfile[key]}/5`;
+            }).join(', ');
+
+            const systemPrompt = `You are a highly skilled MBA Career Development Coach. Your goal is to provide three specific, actionable next steps for a recent MBA graduate. The steps must be tailored for the predicted career sector. Address the user directly. Format your response clearly as a numbered list.`;
+            
+            const userQuery = `My predicted sector is ${sectorName}. My key career values are: ${keyValues}. Draft three precise action items focusing on immediate professional development or job search strategy to help me succeed in this sector.`;
+
+            try {
+                const responseText = await callGeminiAPI(systemPrompt, userQuery);
+                document.getElementById('llmContent').innerText = responseText;
+                showMessage("Actionable steps generated successfully!", 'success');
+            } catch (error) {
+                document.getElementById('llmContent').innerText = `Error: Could not generate content. ${error.message}`;
+                showMessage("AI generation failed. Please try again.", 'error');
+            } finally {
+                toggleButtonLoading(btnId, false, 'nextStepsText', 'nextStepsLoader');
+            }
+        }
+
+        async function draftPitch() {
+            if (!lastPredictedSector || !lastUserProfile) {
+                showMessage("Please run the career prediction first.", 'error');
+                return;
+            }
+
+            const sectorName = SECTORS[lastPredictedSector].name;
+            const btnId = 'pitchBtn';
+            toggleButtonLoading(btnId, true, 'pitchText', 'pitchLoader');
+            document.getElementById('llmContent').innerHTML = "<div class='flex items-center space-x-2 text-indigo-700'><span class='spinner border-t-indigo-700'></span><span>Drafting executive pitch...</span></div>";
+            document.getElementById('geminiOutput').classList.remove('hidden');
+
+            const selectedSkills = lastUserProfile.skills;
+            const undergradStream = lastUserProfile['Whichfieldorstreamwereyoustudyingin'];
+
+            const systemPrompt = `You are an executive branding consultant. Draft a compelling, professional, 4-sentence elevator pitch (personal pitch) for an MBA student transitioning into the specified sector. The pitch must highlight their skills and undergraduate major. Start directly with the pitch text.`;
+            
+            const userQuery = `My undergrad background is ${undergradStream}. My top skills are: ${selectedSkills.join(', ')}. My target career sector is ${sectorName}. Draft a pitch for networking events.`;
+
+            try {
+                const responseText = await callGeminiAPI(systemPrompt, userQuery);
+                document.getElementById('llmContent').innerText = responseText;
+                showMessage("Personal pitch drafted successfully!", 'success');
+            } catch (error) {
+                document.getElementById('llmContent').innerText = `Error: Could not generate content. ${error.message}`;
+                showMessage("AI generation failed. Please try again.", 'error');
+            } finally {
+                toggleButtonLoading(btnId, false, 'pitchText', 'pitchLoader');
+            }
+        }
+
+
+        // --- Initialization ---
+        window.onload = () => {
+            renderFormElements();
+        };
+    </script>
+</body>
+</html>
